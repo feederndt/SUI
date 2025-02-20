@@ -19,7 +19,7 @@ const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
 
 async function sendSui() {
 
-  if (walletArr.length != privateArr.length || walletArr.length == 0 || privateArr.length) {
+  if (walletArr.length != privateArr.length || walletArr.length == 0 || privateArr.length == 0) {
     console.log("Dlm nhìn lại")
   } else {
     for (let i = 0; i < walletArr.length; i++) {
@@ -32,6 +32,7 @@ async function sendSui() {
       });
 
       const suiBalance = Number(coins.data[0].balance)
+      console.log(suiBalance)
       const numTrans = suiBalance - GAS_BUDGET
 
       const tx = new Transaction();
