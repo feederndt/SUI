@@ -5,7 +5,7 @@ const addresses = [];
 const privatekeys = [];
 
 const createWallet = () => {
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < 5000; i++) {
     const keypair = Ed25519Keypair.generate();
 
     const privateKey = keypair.getSecretKey();
@@ -27,4 +27,4 @@ const wb = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
 // Write the file
-XLSX.writeFile(wb, "HaedalOKXCauHa.xlsx");
+XLSX.writeFile(wb, "HaedalOKXcuThe-2.xlsx");

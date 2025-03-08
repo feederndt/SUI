@@ -12,7 +12,7 @@ const walletArr = address_datas.split(/\r?\n|\r|\n/g).filter(e => e.length > 0)
 
 const privateArr = private_datas.split(/\r?\n|\r|\n/g).filter(e => e.length > 0)
 
-const GAS_BUDGET = 1500000
+const GAS_BUDGET = 2000000
 
 const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
 
@@ -27,30 +27,27 @@ async function sendSui() {
 
       const senderAddress = keypair.getPublicKey().toSuiAddress()
 
-      const coins = await client.getCoins({
+      const sui = await client.getBalance({
         owner: senderAddress,
       });
 
-      const suiBalance = Number(coins.data[0].balance)
+      const suiBalance = Number(sui.totalBalance)
+
       console.log(suiBalance)
+
       const numTrans = suiBalance - GAS_BUDGET
+      if (numTrans > 0) {
+        const tx = new Transaction();
+        const [coin] = tx.splitCoins(tx.gas, [numTrans]);
+        tx.transferObjects([coin], walletArr[i]);
+        tx.setGasBudget(GAS_BUDGET);
 
-      const tx = new Transaction();
-      const [coin] = tx.splitCoins(tx.gas, [numTrans]);
-      tx.transferObjects([coin], walletArr[i]);
-      tx.setGasBudget(GAS_BUDGET);
+        const result = await client.signAndExecuteTransaction({
+          signer: keypair,
+          transaction: tx,
+        })
+      }
 
-      const result = await client.signAndExecuteTransaction({
-        signer: keypair,
-        transaction: tx,
-      })
-
-      result.then((result) => {
-        console.log("Transaction Digest:", result.digest);
-      })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
     }
   }
 }
